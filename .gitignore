@@ -32,7 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
-# properties/yml/yaml files
-*.properties
-*.yml
-*.yaml
+target

@@ -1,0 +1,88 @@
+version: '3.7'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.26
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=centwong
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    networks:
+      - sipas_network
+  redis:
+    container_name: "redis"
+    image: "redis:7.2.3"
+    ports:
+      - "6379:6379"
+    expose:
+      - 6379
+    restart: on-failure
+    networks:
+      - sipas_network
+  nacos:
+    container_name: nacos
+    image: nacos/nacos-server:v2.3.0
+    environment:
+      - MODE=standalone
+    # nacos port = https://blog.csdn.net/chengluchuang2753/article/details/123177536
+    ports:
+      - "8849:8848"
+      - "9849:9849"
+      - "9848:9848"
+    expose:
+      - 8849
+      - 9849
+      - 9848
+    networks:
+      - sipas_network
+  config-server:
+    container_name: config-server
+    build: ./config-server
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    networks:
+      - sipas_network
+  gateway:
+    container_name: gateway
+    build: ./gateway
+    restart: on-failure
+    depends_on:
+      - config-server
+    environment:
+      - config-server.host=config-server
+    ports:
+      - "8001:8001"
+    expose:
+      - 8001
+    networks:
+      - sipas_network
+  parent-service:
+    container_name: parent-service
+    build: ./parent-service
+    restart: on-failure
+    depends_on:
+      - config-server
+      - mysql
+      - redis
+    environment:
+      - config-server.host=config-server
+    ports:
+      - "8002:8002"
+    expose:
+      - 8002
+    networks:
+      - sipas_network
+volumes:
+  mysql_volume:
+    name: mysql_volume
+
+networks:
+  sipas_network:

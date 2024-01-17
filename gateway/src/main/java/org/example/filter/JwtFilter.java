@@ -1,11 +1,10 @@
 package org.example.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
 import io.micrometer.common.util.StringUtils;
 import lombok.SneakyThrows;
-import org.apache.http.HttpHeaders;
 import org.example.constant.GatewayConstant;
+import org.example.constant.HttpHeaderConstant;
 import org.example.jwt.JwtUtil;
 import org.example.response.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -67,7 +65,7 @@ public class JwtFilter implements WebFilter {
             var context = Context.of(GatewayConstant.TIME_START, currentTime);
             try {
                 var header = request.getHeaders()
-                        .getOrEmpty(HttpHeaders.AUTHORIZATION);
+                        .getOrEmpty(HttpHeaderConstant.AUTHORIZATION);
                 if (!header.isEmpty()) {
                     var token = header.get(0)
                             .substring(7);

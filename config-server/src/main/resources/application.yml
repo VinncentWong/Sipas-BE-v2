@@ -1,0 +1,26 @@
+# =============================== SPRING CFG ===========================================
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+        bootstrap: true
+# =============================== SERVER CFG ===========================================
+server:
+  port: 8000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+
