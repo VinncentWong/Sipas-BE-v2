@@ -1,0 +1,45 @@
+# =============================== SPRING CFG ===========================================
+
+spring:
+  flyway:
+    url: jdbc:mysql://mysql:3306/parent
+    locations: classpath:/db/migration
+    user: root
+    password: centwong
+  datasource:
+    url: jdbc:mysql://mysql:3306/parent
+    username: root
+    password: centwong
+  jpa:
+    show-sql: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+
+# =============================== SWAGGER-UI CFG ===========================================
+springdoc:
+  swagger-ui:
+    path: /swagger/index.html
+  use-fqn: true
+
+# =============================== JWT CFG ===========================================
+jwt:
+  secret: test-centwong-123
+
+# =============================== DUBBO CFG ===========================================
+dubbo:
+  application:
+    name: dubbo-parent-service
+    qosEnable: true
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://nacos:8848
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

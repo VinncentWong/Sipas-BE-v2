@@ -1,7 +1,7 @@
 # =============================== SPRING CFG ===========================================
 spring:
   application:
-    name: orangtua-service
+    name: parent-service
   cloud:
     config:
       uri: http://${config-server.host}:8000

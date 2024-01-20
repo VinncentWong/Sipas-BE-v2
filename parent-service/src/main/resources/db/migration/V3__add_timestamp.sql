@@ -1,0 +1,5 @@
+ALTER TABLE `parent`
+ADD COLUMN `created_at` TIMESTAMP,
+ADD COLUMN `updated_at` TIMESTAMP,
+ADD COLUMN `deleted_at` TIMESTAMP,
+ADD COLUMN `is_active` BOOLEAN;
