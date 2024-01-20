@@ -1,5 +1,6 @@
 package org.example.interceptor;
 
+import org.example.exception.DataAlreadyExistException;
 import org.example.exception.DataNotFoundException;
 import org.example.exception.ForbiddenException;
 import org.example.response.HttpResponse;
@@ -13,11 +14,32 @@ public class Interceptor {
 
     @ExceptionHandler({
             RuntimeException.class,
-            DataNotFoundException.class
     })
     public ResponseEntity<HttpResponse> handleException(RuntimeException ex){
         return ResponseEntity
                 .status(HttpStatus.OK)
+                .body(
+                        HttpResponse.sendErrorResponse(ex.getMessage())
+                );
+    }
+
+    @ExceptionHandler({
+            DataNotFoundException.class,
+    })
+    public ResponseEntity<HttpResponse> handleException(DataNotFoundException ex){
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        HttpResponse.sendErrorResponse(ex.getMessage())
+                );
+    }
+
+    @ExceptionHandler({
+            DataAlreadyExistException.class
+    })
+    public ResponseEntity<HttpResponse> handleException(DataAlreadyExistException ex){
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(
                         HttpResponse.sendErrorResponse(ex.getMessage())
                 );
