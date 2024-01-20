@@ -5,9 +5,27 @@ spring:
   cloud:
     config:
       uri: http://${config-server.host}:8000
+    gateway:
+      routes:
+        id: "parent-service"
+        predicates:
+          - Path=/parent-service/**
+        filters:
+          - RewritePath=/parent-service/(?<path>.*), /$\{path}
+        uri: lb://parent-service
   main:
     web-application-type: reactive
 
 # =============================== SERVER CFG ===========================================
 server:
   port: 8001
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: TRACE

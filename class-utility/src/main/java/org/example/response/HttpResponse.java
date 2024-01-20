@@ -1,8 +1,12 @@
 package org.example.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Builder;
-import org.example.constant.GatewayConstant;
+import lombok.Getter;
+import lombok.Setter;
+import org.example.constant.ContextConstant;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import reactor.util.context.Context;
 
@@ -10,25 +14,31 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Builder(access = AccessLevel.PRIVATE)
+@Setter
+@Getter
 public class HttpResponse {
 
-    private HttpMessage message;
+    private HttpMessage metadata;
 
     private Object data;
-
-    private Meta metadata;
 
     private Pagination pagination;
 
     @Builder
+    @Setter
+    @Getter
     static class HttpMessage{
         private String title;
         private String message;
+        private Meta meta;
     }
 
     @Builder
+    @Setter
+    @Getter
     static class Meta{
         private String path;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         private LocalDateTime timestamp;
         private Long status;
         private String timeElapsed;
@@ -36,6 +46,8 @@ public class HttpResponse {
     }
 
     @Builder
+    @Setter
+    @Getter
     public static class Pagination{
         private Long currentPage;
         private Long currentElements;
@@ -45,71 +57,53 @@ public class HttpResponse {
 
     public static HttpResponse sendSuccessResponse(
             Context context,
-            HttpStatusCode statusCode,
+            HttpStatus statusCode,
             String message,
             Object data,
             Pagination pagination,
             Object metadata
     ){
-        var initialTime = context.<LocalDateTime>get(GatewayConstant.TIME_START);
+        var initialTime = context.<LocalDateTime>get(ContextConstant.TIME_START);
         var now = LocalDateTime.now();
 
         var differenceMinute = ChronoUnit.MINUTES.between(now, initialTime);
         var differenceSecond = differenceMinute % 60;
         return HttpResponse
                 .builder()
-                .message(
+                .metadata(
                         HttpMessage
                                 .builder()
                                 .title("Request berhasil")
                                 .message(message)
+                                .meta(
+                                        Meta
+                                                .builder()
+                                                .path(
+                                                        context.get(ContextConstant.REQUEST_PATH)
+                                                )
+                                                .data(metadata)
+                                                .status((long)statusCode.value())
+                                                .timestamp(LocalDateTime.now())
+                                                .timeElapsed(String.format("%dm %ds", differenceMinute, differenceSecond))
+                                                .build()
+                                )
                                 .build()
                 )
                 .data(data)
-                .metadata(
-                        Meta
-                                .builder()
-                                .path(
-                                        context.get(GatewayConstant.REQUEST_PATH)
-                                )
-                                .data(metadata)
-                                .status((long)statusCode.value())
-                                .timestamp(LocalDateTime.now())
-                                .timeElapsed(String.format("%dm %ds", differenceMinute, differenceSecond))
-                                .build()
-                )
                 .pagination(pagination)
                 .build();
     }
 
     public static HttpResponse sendErrorResponse(
-            Context context,
-            HttpStatusCode statusCode,
             String message
     ){
-        var initialTime = context.<LocalDateTime>get(GatewayConstant.TIME_START);
-        var now = LocalDateTime.now();
-
-        var differenceMinute = ChronoUnit.MINUTES.between(now, initialTime);
-        var differenceSecond = differenceMinute % 60;
         return HttpResponse
                 .builder()
-                .message(
+                .metadata(
                         HttpMessage
                                 .builder()
                                 .title("Terjadi kesalahan pada saat mengolah request")
                                 .message(message)
-                                .build()
-                )
-                .metadata(
-                        Meta
-                                .builder()
-                                .path(
-                                        context.get(GatewayConstant.REQUEST_PATH)
-                                )
-                                .status((long)statusCode.value())
-                                .timestamp(LocalDateTime.now())
-                                .timeElapsed(String.format("%dm %ds", differenceMinute, differenceSecond))
                                 .build()
                 )
                 .build();

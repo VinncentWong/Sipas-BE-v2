@@ -1,2 +1,12 @@
 jwt:
   secret: test-centwong-123
+
+spring:
+  cloud:
+    loadbalancer.ribbon.enabled: false
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+    gateway:
+      discovery.locator:
+        enabled: true
