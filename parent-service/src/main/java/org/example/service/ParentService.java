@@ -1,10 +1,12 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.example.constant.ContextConstant;
 import org.example.dto.ParentDto;
 import org.example.entity.Parent;
 import org.example.enums.Role;
+import org.example.exception.DataAlreadyExistException;
 import org.example.exception.DataNotFoundException;
 import org.example.exception.ForbiddenException;
 import org.example.jwt.JwtUtil;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 @Service
 @DubboService
 @Transactional
+@Slf4j
 public class ParentService implements IParentService {
 
     @Autowired
@@ -34,7 +37,25 @@ public class ParentService implements IParentService {
 
     @Override
     public Parent save(ParentDto.Create dto) {
+
+        log.info("catch dto save: {}", dto);
+
+        // check parent email first(should be unique)
+        var optPerson = this.repository
+                .findOne(
+                        Example.of(
+                                Parent
+                                        .builder()
+                                        .email(dto.email())
+                                        .build()
+                        )
+                );
+        if(optPerson.isPresent()){
+            throw new DataAlreadyExistException("parent email already exist");
+        }
+
         var parent = dto.toParent();
+        parent.setIsActive(true);
         return this
                 .repository
                 .save(parent);
@@ -42,6 +63,9 @@ public class ParentService implements IParentService {
 
     @Override
     public HttpResponse login(ParentDto.Login dto) {
+
+        log.info("catch dto login: {}", dto);
+
         var initialTime = LocalDateTime.now();
         var dtoParent = dto.toParent();
         var parent = this.repository.findOne(

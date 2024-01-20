@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.example.constant.ContextConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -16,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 @Builder(access = AccessLevel.PRIVATE)
 @Setter
 @Getter
+@Slf4j
 public class HttpResponse {
 
     private HttpMessage metadata;
@@ -66,8 +68,13 @@ public class HttpResponse {
         var initialTime = context.<LocalDateTime>get(ContextConstant.TIME_START);
         var now = LocalDateTime.now();
 
+        log.info("initialTime: {}, now: {}", initialTime, now);
+
         var differenceMinute = ChronoUnit.MINUTES.between(now, initialTime);
-        var differenceSecond = differenceMinute % 60;
+        var differenceSecond = differenceMinute != 0 ? differenceMinute % 60 : ChronoUnit.SECONDS.between(now, initialTime);
+
+        log.info("differenceMinute: {}, differenceSecond: {}", differenceMinute, differenceSecond);
+
         return HttpResponse
                 .builder()
                 .metadata(
