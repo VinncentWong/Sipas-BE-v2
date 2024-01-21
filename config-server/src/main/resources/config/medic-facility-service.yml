@@ -1,13 +1,12 @@
 # =============================== SPRING CFG ===========================================
-
 spring:
   flyway:
-    url: jdbc:mysql://mysql:3306/parent
+    url: jdbc:mysql://mysql:3306/medic-facility
     locations: classpath:/db/migration
     user: root
     password: centwong
   datasource:
-    url: jdbc:mysql://mysql:3306/parent
+    url: jdbc:mysql://mysql:3306/medic-facility
     username: root
     password: centwong
   jpa:
@@ -17,27 +16,11 @@ spring:
       discovery:
         server-addr: nacos:8848
 
-# =============================== SWAGGER-UI CFG ===========================================
-springdoc:
-  swagger-ui:
-    path: /swagger/index.html
-  use-fqn: true
-
 # =============================== JWT CFG ===========================================
 jwt:
   secret: test-centwong-123-456-789-101112-131415-161718-192021_AZXCVBNM<>?
 
-# =============================== DUBBO CFG ===========================================
-dubbo:
-  application:
-    name: dubbo-parent-service
-    qosEnable: true
-  protocol:
-    name: dubbo
-    port: -1
-  registry:
-    address: nacos://nacos:8848
-
+# =============================== ENDPOINT CFG ===========================================
 management:
   endpoints:
     web:

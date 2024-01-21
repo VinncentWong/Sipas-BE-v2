@@ -3,9 +3,9 @@ package org.example.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.constant.ContextConstant;
-import org.example.dto.ParentDto;
+import org.example.dto.MedicFacilityDto;
 import org.example.response.HttpResponse;
-import org.example.service.IParentService;
+import org.example.service.IMedicFacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,11 +19,11 @@ import reactor.util.context.Context;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping(value = "/parent")
-public class ParentController {
+@RequestMapping("/medic-facility")
+public class MedicFacilityController {
 
     @Autowired
-    private IParentService service;
+    private IMedicFacilityService service;
 
     @PostMapping(
             value = "/register",
@@ -32,8 +32,8 @@ public class ParentController {
     )
     public ResponseEntity<HttpResponse> save(
             HttpServletRequest req,
-            @RequestBody @Valid ParentDto.Create dto
-            ){
+            @RequestBody @Valid MedicFacilityDto.Create dto
+    ){
         var initialTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
@@ -58,11 +58,12 @@ public class ParentController {
     )
     public ResponseEntity<HttpResponse> login(
             HttpServletRequest req,
-            @RequestBody @Valid ParentDto.Login dto
+            @RequestBody @Valid MedicFacilityDto.Login dto
     ){
         var initialTime = LocalDateTime.now();
-        var data = this.service.login(dto);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        var res = this.service.login(dto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .body(
                         HttpResponse
                                 .sendSuccessResponse(
@@ -70,10 +71,10 @@ public class ParentController {
                                                 .of(ContextConstant.TIME_START, initialTime)
                                                 .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
                                         HttpStatus.CREATED,
-                                        "parent authenticated",
-                                        data.getData(),
+                                        "successfully create parent",
+                                        res.getData(),
                                         null,
-                                        data.getMetadata()
+                                        res.getMetadata()
                                 )
                 );
     }

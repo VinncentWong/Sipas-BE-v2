@@ -7,12 +7,19 @@ spring:
       uri: http://${config-server.host}:8000
     gateway:
       routes:
-        id: "parent-service"
-        predicates:
-          - Path=/parent-service/**
-        filters:
-          - RewritePath=/parent-service/(?<path>.*), /$\{path}
-        uri: lb://parent-service
+        - id: "parent-service"
+          predicates:
+            - Path=/parent-service/**
+          filters:
+            - RewritePath=/parent-service/(?<path>.*), /$\{path}
+          uri: lb://parent-service
+        - id: "medic-facility-service"
+          predicates:
+            - Path=/medic-facility-service/**
+          filters:
+            - RewritePath=/medic-facility-service/(?<path>.*), /$\{path}
+          uri: lb://medic-facility-service
+
   main:
     web-application-type: reactive
 

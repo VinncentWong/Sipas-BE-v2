@@ -1,42 +1,41 @@
 package org.example.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Builder
-@Entity
-@NamedQueries({
-        @NamedQuery(
-                name = "Parent.queryByEmail",
-                query = "SELECT p FROM Parent p WHERE p.email = :email"
-        )
-})
-@DynamicInsert
-public class Parent{
+public class MedicFacility {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fatherName;
-
-    private String motherName;
-
     private String email;
 
     private String password;
 
-    private Boolean isConnectedWithFaskes;
+    private String username;
+
+    private String uniqueCode;
+
+    private String telephoneNumber;
+
+    private String whatsappNumber;
+
+    private String address;
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING)

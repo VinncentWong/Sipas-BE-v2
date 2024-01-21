@@ -47,6 +47,8 @@ public class JwtFilter implements GlobalFilter {
     private final List<String> nonSecuredEndpoints = List.of(
             "/parent/register",
             "/parent/login",
+            "/medic-facility/register",
+            "/medic-facility/login",
             "/check"
     );
 
