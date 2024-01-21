@@ -44,7 +44,7 @@ public class ParentDto {
             return Parent
                     .builder()
                     .email(this.email)
-                    .password(BcryptUtil.encode(this.password))
+                    .password(this.password)
                     .build();
         }
     }

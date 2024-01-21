@@ -80,6 +80,22 @@ services:
       - 8002
     networks:
       - sipas_network
+  medic-facility-service:
+    container_name: medic-facility-service
+    build: ./medic-facility-service
+    restart: on-failure
+    depends_on:
+      - config-server
+      - mysql
+      - redis
+    ports:
+      - "8003:8003"
+    environment:
+      - config-server.host=config-server
+    expose:
+      - 8003
+    networks:
+      - sipas_network
 volumes:
   mysql_volume:
     name: mysql_volume

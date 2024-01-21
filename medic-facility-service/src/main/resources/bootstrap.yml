@@ -1,0 +1,9 @@
+server:
+  port: 8003
+
+spring:
+  application:
+    name: medic-facility-service
+  cloud:
+    config:
+      uri: http://${config-server.host}:8000

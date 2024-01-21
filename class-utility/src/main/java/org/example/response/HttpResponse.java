@@ -57,6 +57,35 @@ public class HttpResponse {
         private Long totalElements;
     }
 
+    @Builder
+    @Setter
+    @Getter
+    public static class PaginationParam{
+        private Long offset;
+        private Long limit;
+        private QueryParam param;
+    }
+
+    @Builder
+    @Setter
+    @Getter
+    public static class QueryParam{
+
+        private Sort sort;
+
+        @Builder
+        @Setter
+        @Getter
+        public static class Sort{
+            private String columnName;
+            private SortPosition position;
+
+            public enum SortPosition{
+                ASC, DESC
+            }
+        }
+    }
+
     public static HttpResponse sendSuccessResponse(
             Context context,
             HttpStatus statusCode,
