@@ -4,19 +4,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.constant.ContextConstant;
 import org.example.dto.ParentDto;
+import org.example.entity.ParentParam;
 import org.example.response.HttpResponse;
 import org.example.service.IParentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.util.context.Context;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/parent")
@@ -73,6 +72,81 @@ public class ParentController {
                                         "parent authenticated",
                                         data.getData(),
                                         null,
+                                        data.getMetadata()
+                                )
+                );
+    }
+
+    @GetMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<HttpResponse> get(
+            HttpServletRequest req,
+            @PathVariable("id") Long id
+            ){
+        var initialTime = LocalDateTime.now();
+        var data = this.service.get(
+                ParentParam
+                        .builder()
+                        .id(id)
+                        .build()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        HttpResponse
+                                .sendSuccessResponse(
+                                        Context
+                                                .of(ContextConstant.TIME_START, initialTime)
+                                                .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
+                                        HttpStatus.CREATED,
+                                        "success get parent data",
+                                        data.getData(),
+                                        null,
+                                        data.getMetadata()
+                                )
+                );
+
+
+    }
+
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<HttpResponse> getList(
+            HttpServletRequest req,
+            @RequestParam(name = "id", required = false) Long id,
+            @RequestParam(name = "ids", required = false) List<Long> ids,
+            @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
+            @RequestParam(name = "offset", required = false, defaultValue = "0") Integer offset
+    ){
+        var initialTime = LocalDateTime.now();
+
+        var data = this.service.getList(
+                ParentParam
+                        .builder()
+                        .id(id)
+                        .ids(ids)
+                        .pgParam(
+                                HttpResponse.PaginationParam
+                                        .builder()
+                                        .limit(limit)
+                                        .offset(offset)
+                                        .build()
+                        )
+                        .build()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        HttpResponse
+                                .sendSuccessResponse(
+                                        Context
+                                                .of(ContextConstant.TIME_START, initialTime)
+                                                .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
+                                        HttpStatus.CREATED,
+                                        "success get parent list data",
+                                        data.getData(),
+                                        data.getPg(),
                                         data.getMetadata()
                                 )
                 );

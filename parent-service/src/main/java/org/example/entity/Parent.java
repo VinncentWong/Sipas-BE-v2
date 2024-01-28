@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
         )
 })
 @DynamicInsert
+@ToString
 public class Parent{
 
     @Id

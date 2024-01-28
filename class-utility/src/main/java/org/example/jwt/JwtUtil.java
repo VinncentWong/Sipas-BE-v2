@@ -2,10 +2,12 @@ package org.example.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.example.constant.JwtConstant;
 
 import java.util.Base64;
 
+@Slf4j
 public class JwtUtil {
 
     public static String generateJwtToken(String secretToken, String role, Long id){
@@ -30,13 +32,14 @@ public class JwtUtil {
             var id = claims.get(JwtConstant.ID);
             var role = claims.get(JwtConstant.ROLE);
             if(id != null){
-                jwtToken.id(Long.parseLong(String.valueOf((long)id)));
+                jwtToken.id(Long.parseLong(String.valueOf((int)id)));
             }
             if(role != null){
                 jwtToken.role((String)role);
             }
             return jwtToken.build();
         } catch(Exception e){
+            log.error("error on JwtUtil: {}", e.getMessage());
             throw e;
         }
     }

@@ -1,10 +1,7 @@
 package org.example.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.example.constant.ContextConstant;
 import org.springframework.http.HttpStatus;
@@ -32,6 +29,7 @@ public class HttpResponse {
     static class HttpMessage{
         private String title;
         private String message;
+        private Boolean success;
         private Meta meta;
     }
 
@@ -50,6 +48,7 @@ public class HttpResponse {
     @Builder
     @Setter
     @Getter
+    @ToString
     public static class Pagination{
         private Long currentPage;
         private Long currentElements;
@@ -61,8 +60,8 @@ public class HttpResponse {
     @Setter
     @Getter
     public static class PaginationParam{
-        private Long offset;
-        private Long limit;
+        private Integer offset;
+        private Integer limit;
         private QueryParam param;
     }
 
@@ -123,6 +122,7 @@ public class HttpResponse {
                                                 .timeElapsed(String.format("%dm %ds", differenceMinute, differenceSecond))
                                                 .build()
                                 )
+                                .success(true)
                                 .build()
                 )
                 .data(data)
@@ -131,7 +131,8 @@ public class HttpResponse {
     }
 
     public static HttpResponse sendErrorResponse(
-            String message
+            String message,
+            Boolean success
     ){
         return HttpResponse
                 .builder()
@@ -140,6 +141,7 @@ public class HttpResponse {
                                 .builder()
                                 .title("Terjadi kesalahan pada saat mengolah request")
                                 .message(message)
+                                .success(success)
                                 .build()
                 )
                 .build();
