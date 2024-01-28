@@ -3,7 +3,9 @@ package org.example.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.constant.ContextConstant;
+import org.example.constant.HttpHeaderConstant;
 import org.example.dto.ParentDto;
+import org.example.entity.Parent;
 import org.example.entity.ParentParam;
 import org.example.response.HttpResponse;
 import org.example.service.IParentService;
@@ -61,14 +63,14 @@ public class ParentController {
     ){
         var initialTime = LocalDateTime.now();
         var data = this.service.login(dto);
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         HttpResponse
                                 .sendSuccessResponse(
                                         Context
                                                 .of(ContextConstant.TIME_START, initialTime)
                                                 .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
-                                        HttpStatus.CREATED,
+                                        HttpStatus.OK,
                                         "parent authenticated",
                                         data.getData(),
                                         null,
@@ -92,14 +94,14 @@ public class ParentController {
                         .id(id)
                         .build()
         );
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         HttpResponse
                                 .sendSuccessResponse(
                                         Context
                                                 .of(ContextConstant.TIME_START, initialTime)
                                                 .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
-                                        HttpStatus.CREATED,
+                                        HttpStatus.OK,
                                         "success get parent data",
                                         data.getData(),
                                         null,
@@ -136,19 +138,138 @@ public class ParentController {
                         )
                         .build()
         );
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(
                         HttpResponse
                                 .sendSuccessResponse(
                                         Context
                                                 .of(ContextConstant.TIME_START, initialTime)
                                                 .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
-                                        HttpStatus.CREATED,
+                                        HttpStatus.OK,
                                         "success get parent list data",
                                         data.getData(),
                                         data.getPg(),
                                         data.getMetadata()
                                 )
+                );
+    }
+
+    @PutMapping(
+            consumes = {
+                    MediaType.APPLICATION_JSON_VALUE
+            },
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE
+            }
+    )
+    public ResponseEntity<HttpResponse> update(
+            HttpServletRequest req,
+            @RequestBody Parent updateDto
+    ){
+
+        var id = Long.parseLong(
+                req.getHeader(HttpHeaderConstant.USER_ID)
+        );
+
+        var initialTime = LocalDateTime.now();
+
+        var res = this.service
+                .update(
+                        ParentParam
+                                .builder()
+                                .id(id)
+                                .build(),
+                        updateDto
+                );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        HttpResponse.sendSuccessResponse(
+                                Context
+                                        .of(ContextConstant.TIME_START, initialTime)
+                                        .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
+                                HttpStatus.OK,
+                                "success update parent",
+                                res.getData(),
+                                null,
+                                null
+                        )
+                );
+    }
+
+    @PatchMapping(
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE
+            }
+    )
+    public ResponseEntity<HttpResponse> activate(
+            HttpServletRequest req
+    ){
+
+        var initialTime = LocalDateTime.now();
+
+        var id = Long.parseLong(
+                req.getHeader(HttpHeaderConstant.USER_ID)
+        );
+
+        var res = this.service
+                .activate(
+                        ParentParam
+                                .builder()
+                                .id(id)
+                                .build()
+                );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        HttpResponse.sendSuccessResponse(
+                                Context
+                                        .of(ContextConstant.TIME_START, initialTime)
+                                        .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
+                                HttpStatus.OK,
+                                "success activate parent",
+                                res.getData(),
+                                null,
+                                null
+                        )
+                );
+    }
+
+    @DeleteMapping(
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE
+            }
+    )
+    public ResponseEntity<HttpResponse> delete(
+            HttpServletRequest req
+    ){
+
+        var initialTime = LocalDateTime.now();
+
+        var id = Long.parseLong(
+                req.getHeader(HttpHeaderConstant.USER_ID)
+        );
+
+        var res = this.service
+                .delete(
+                        ParentParam
+                                .builder()
+                                .id(id)
+                                .build()
+                );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        HttpResponse.sendSuccessResponse(
+                                Context
+                                        .of(ContextConstant.TIME_START, initialTime)
+                                        .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
+                                HttpStatus.OK,
+                                "success delete parent",
+                                res.getData(),
+                                null,
+                                null
+                        )
                 );
     }
 }
