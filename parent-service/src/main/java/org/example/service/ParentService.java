@@ -11,6 +11,7 @@ import org.example.exception.DataAlreadyExistException;
 import org.example.exception.DataNotFoundException;
 import org.example.exception.ForbiddenException;
 import org.example.jwt.JwtUtil;
+import org.example.repository.IRepository;
 import org.example.repository.ParentRepository;
 import org.example.response.HttpResponse;
 import org.example.response.ServiceData;
@@ -34,6 +35,9 @@ public class ParentService implements IParentService {
 
     @Autowired
     private ParentRepository repository;
+
+    @Autowired
+    private IRepository iRepository;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -97,26 +101,91 @@ public class ParentService implements IParentService {
 
     @Override
     public ServiceData<Parent> get(ParentParam param) {
-        return null;
+
+        log.info("catch get param: {}", param);
+
+        var res = this.iRepository
+                .get(param);
+
+        return ServiceData
+                .<Parent>builder()
+                .data(res.getData())
+                .build();
     }
 
     @Override
     public ServiceData<List<Parent>> getList(ParentParam param) {
-        return null;
+
+        log.info("catch get param: {}", param);
+
+        var res = this.iRepository
+                .getList(param);
+
+        log.info("pg result: {}", res.getPg());
+
+        return ServiceData
+                .<List<Parent>>builder()
+                .data(res.getData())
+                .pg(res.getPg())
+                .build();
     }
 
     @Override
     public ServiceData<Parent> update(ParentParam param, Parent parent) {
-        return null;
+
+        log.info("catch get list param: {}", param);
+        log.info("catch parent: {}", parent);
+
+        var res = this
+                .iRepository
+                .update(param, parent);
+
+        return ServiceData
+                .<Parent>builder()
+                .data(res.getData())
+                .build();
     }
 
     @Override
     public ServiceData<Parent> delete(ParentParam param) {
-        return null;
+
+        log.info("catch delete param: {}", param);
+
+        var deletedParent = Parent
+                .builder()
+                .deletedAt(LocalDateTime.now())
+                .isActive(false)
+                .build();
+
+        var res = this
+                .iRepository
+                .update(param, deletedParent);
+
+        return ServiceData
+                .<Parent>builder()
+                .data(res.getData())
+                .build();
     }
 
     @Override
     public ServiceData<Parent> activate(ParentParam param) {
-        return null;
+
+        log.info("catch activate param: {}", param);
+
+        var updatedParent = Parent
+                .builder()
+                .updatedAt(LocalDateTime.now())
+                .deletedAt(null)
+                .isActive(true)
+                .build();
+
+        var res = this
+                .iRepository
+                .update(param, updatedParent);
+
+        return ServiceData
+                .<Parent>builder()
+                .data(res.getData())
+                .build();
     }
 }

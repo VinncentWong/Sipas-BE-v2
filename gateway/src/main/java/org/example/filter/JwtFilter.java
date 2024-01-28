@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.example.constant.ContextConstant;
 import org.example.constant.HttpHeaderConstant;
@@ -30,6 +31,7 @@ import reactor.util.context.Context;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -77,12 +79,12 @@ public class JwtFilter implements GlobalFilter {
                 var header = request.getHeaders()
                         .getOrEmpty(HttpHeaderConstant.AUTHORIZATION);
                 if (!header.isEmpty()) {
-                    var token = header.get(0)
-                            .substring(7);
+                    var token = header.get(0);
+                    log.info("get jwt token: {}", token);
                     if(StringUtils.isBlank(token) || !token.startsWith("Bearer")){
                         var httpResponse = HttpResponse
                                 .sendErrorResponse(
-                                        "format token tidak valid!"
+                                        "format token tidak valid!", false
                                 );
                         response.setStatusCode(HttpStatus.FORBIDDEN);
                         return response
@@ -90,11 +92,18 @@ public class JwtFilter implements GlobalFilter {
                                         this.getDataBuffer(response, httpResponse)
                                 );
                     } else {
+                        token = token.substring(7);
                         var jwtToken = JwtUtil.getTokenData(this.jwtSecret, token);
-                        request.getHeaders().put(
-                                HttpHeaderConstant.USER_ID,
-                                List.of(String.valueOf(jwtToken.getId()))
-                        );
+                        log.info("extracted token data: {}", jwtToken);
+                        exchange = exchange
+                                .mutate()
+                                .request(
+                                        request
+                                                .mutate()
+                                                .header(HttpHeaderConstant.USER_ID, String.valueOf(jwtToken.getId()))
+                                                .build()
+                                )
+                                .build();
                         return chain
                                 .filter(exchange)
                                 .then(Mono.fromRunnable(logResponse(exchange)));
@@ -102,7 +111,7 @@ public class JwtFilter implements GlobalFilter {
                 } else {
                     var httpResponse = HttpResponse
                             .sendErrorResponse(
-                                    "header kosong! silahkan masukkan header sesuai ketentuan yang sudah ada"
+                                    "header kosong! silahkan masukkan header sesuai ketentuan yang sudah ada", false
                             );
                     response.setStatusCode(HttpStatus.FORBIDDEN);
                     return response
@@ -113,7 +122,7 @@ public class JwtFilter implements GlobalFilter {
             } catch (Exception e) {
                 var httpResponse = HttpResponse
                         .sendErrorResponse(
-                                String.format("jwt token tidak valid: %s", e.getMessage())
+                                String.format("jwt token tidak valid: %s", e.getMessage()), false
                         );
                 response.setStatusCode(HttpStatus.FORBIDDEN);
                 return response

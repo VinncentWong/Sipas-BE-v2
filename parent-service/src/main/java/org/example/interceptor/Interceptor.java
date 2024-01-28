@@ -1,5 +1,6 @@
 package org.example.interceptor;
 
+import jakarta.persistence.NoResultException;
 import org.example.exception.DataAlreadyExistException;
 import org.example.exception.DataNotFoundException;
 import org.example.exception.ForbiddenException;
@@ -17,9 +18,9 @@ public class Interceptor {
     })
     public ResponseEntity<HttpResponse> handleException(RuntimeException ex){
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        HttpResponse.sendErrorResponse(ex.getMessage())
+                        HttpResponse.sendErrorResponse(ex.getMessage(), false)
                 );
     }
 
@@ -30,7 +31,7 @@ public class Interceptor {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(
-                        HttpResponse.sendErrorResponse(ex.getMessage())
+                        HttpResponse.sendErrorResponse(ex.getMessage(), false)
                 );
     }
 
@@ -41,7 +42,7 @@ public class Interceptor {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(
-                        HttpResponse.sendErrorResponse(ex.getMessage())
+                        HttpResponse.sendErrorResponse(ex.getMessage(), false)
                 );
     }
 
@@ -52,7 +53,18 @@ public class Interceptor {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(
-                        HttpResponse.sendErrorResponse(ex.getMessage())
+                        HttpResponse.sendErrorResponse(ex.getMessage(), false)
+                );
+    }
+
+    @ExceptionHandler({
+            NoResultException.class
+    })
+    public ResponseEntity<HttpResponse> handleException(NoResultException ex){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        HttpResponse.sendErrorResponse(ex.getMessage(), true)
                 );
     }
 }
