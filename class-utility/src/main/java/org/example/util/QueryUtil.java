@@ -12,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.annotation.ParamColumn;
 import org.example.exception.QueryException;
 import org.example.response.HttpResponse;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -280,5 +284,99 @@ public class QueryUtil {
                 .query(query)
                 .build();
 
+    }
+
+    public static Query generateReactiveQuery(Object param, boolean isCountOperation){
+        if(param == null){
+            throw new QueryException("param can't be null");
+        }
+
+        var limit = -1;
+        var offset = -1;
+
+        HttpResponse.QueryParam.Sort.SortPosition sortPosition = null;
+        String sortColumnName = null;
+
+        var criterias = new ArrayList<Criteria>();
+        var clazz = param.getClass();
+        var fields = clazz.getDeclaredFields();
+        for(var field: fields){
+            try{
+                field.setAccessible(true);
+
+                var value = field.get(param);
+
+                var isColumnExist = field.isAnnotationPresent(Column.class);
+                String columnName;
+                if(isColumnExist){
+                    columnName = field.getAnnotation(Column.class)
+                            .value();
+                } else {
+                    columnName = field.getName();
+                }
+
+                if(Collection.class.isAssignableFrom(field.getType())){
+                    // is Collection type or sub-type
+                    if(value != null){
+                        var list = (ArrayList) value;
+                        criterias.add(
+                                Criteria
+                                        .where(columnName)
+                                        .in(list)
+                        );
+                    }
+                } else if(field.getType() == HttpResponse.PaginationParam.class){
+                    if(value != null && !isCountOperation){
+                        var pgParam = (HttpResponse.PaginationParam) value;
+
+                        limit = pgParam.getLimit();
+                        offset = pgParam.getOffset();
+
+                        var pgParamParam = pgParam.getParam();
+                        if (pgParamParam != null){
+                            var sort = pgParamParam.getSort();
+                            if(sort != null){
+                                sortPosition = sort.getPosition();
+                                columnName = sort.getColumnName();
+                            }
+                        }
+                    }
+                } else {
+                    if(value != null){
+                        criterias.add(
+                                Criteria.where(columnName)
+                                        .is(value)
+                        );
+                    }
+                }
+            } catch(Exception e){
+                log.error("error on generateReactiveSelectQUery with message: {}", e.getMessage());
+                throw new QueryException(e.getMessage());
+            } finally{
+                field.setAccessible(false);
+            }
+        }
+
+        var query = Query
+                .query(Criteria.from(criterias));
+
+        if(limit != -1 && offset != -1){
+            query = query
+                    .limit(limit)
+                    .offset(offset);
+        }
+
+        if(sortPosition != null && sortColumnName != null){
+            var order = switch (sortPosition){
+                case ASC -> Sort.Order.asc(sortColumnName);
+                case DESC -> Sort.Order.desc(sortColumnName);
+            };
+            query = query
+                    .sort(Sort.by(
+                            order
+                    ));
+        }
+
+        return query;
     }
 }

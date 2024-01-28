@@ -19,7 +19,8 @@
 		<module>class-utility</module>
 		<module>parent-service</module>
         <module>medic-facility-service</module>
-    </modules>
+		<module>parent-medic-facility-service</module>
+	</modules>
 	<packaging>pom</packaging>
 	<properties>
 		<java.version>17</java.version>
@@ -27,6 +28,19 @@
 		<jjwt.version>0.11.5</jjwt.version>
 		<app.version>0.0.1-SNAPSHOT</app.version>
 		<spring.cloud.bootstrap.version>3.1.7</spring.cloud.bootstrap.version>
+		<!-- the version is the lower of the ones found in these two links
+    (they should always be synced, but double checking is better than being stuck on an error):
+    https://search.maven.org/search?q=a:protoc-gen-grpc-kotlin
+    https://search.maven.org/search?q=a:grpc-kotlin-stub -->
+		<grpc.kotlin.version>1.2.0</grpc.kotlin.version>
+
+		<!-- The version is the latest found here: https://search.maven.org/artifact/io.grpc/grpc-protobuf -->
+		<!-- IMPORTANT: currently we support max 1.39.0 -->
+		<java.grpc.version>1.39.0</java.grpc.version>
+
+		<!-- the version is the latest found here: https://search.maven.org/search?q=a:protobuf-kotlin -->
+		<!-- IMPORTANT: currently we support max 3.18.1 -->
+		<protobuf.version>3.18.1</protobuf.version>
 	</properties>
 
 	<dependencyManagement>
@@ -170,6 +184,31 @@
 				<artifactId>mapstruct-processor</artifactId>
 				<version>1.5.5.Final</version>
 			</dependency>
+			<dependency>
+				<groupId>io.asyncer</groupId>
+				<artifactId>r2dbc-mysql</artifactId>
+				<version>1.0.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-r2dbc</artifactId>
+				<version>3.2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-kotlin-stub</artifactId>
+				<version>${grpc.kotlin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-protobuf</artifactId>
+				<version>${java.grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.protobuf</groupId>
+				<artifactId>protobuf-kotlin</artifactId>
+				<version>${protobuf.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -178,6 +217,59 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>kr.motd.maven</groupId>
+				<artifactId>os-maven-plugin</artifactId>
+				<version>1.7.0</version> <!-- consider handling this version via properties as well -->
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>detect</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>0.6.1</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<goals>
+							<goal>compile</goal>
+							<goal>compile-custom</goal>
+						</goals>
+						<configuration>
+							<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
+							<pluginId>grpc-java</pluginId>
+							<pluginArtifact>io.grpc:protoc-gen-grpc-java:${java.grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
+							<protocPlugins>
+								<protocPlugin>
+									<id>grpc-kotlin</id>
+									<groupId>io.grpc</groupId>
+									<artifactId>protoc-gen-grpc-kotlin</artifactId>
+									<version>${grpc.kotlin.version}</version>
+									<classifier>jdk8</classifier>
+									<mainClass>io.grpc.kotlin.generator.GeneratorRunner</mainClass>
+								</protocPlugin>
+							</protocPlugins>
+						</configuration>
+					</execution>
+					<execution>
+						<id>compile-kt</id>
+						<goals>
+							<goal>compile-custom</goal>
+						</goals>
+						<configuration>
+							<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
+							<outputDirectory>${project.build.directory}/generated-sources/protobuf/kotlin</outputDirectory>
+							<pluginId>kotlin</pluginId>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

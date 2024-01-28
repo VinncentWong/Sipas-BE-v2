@@ -20,8 +20,10 @@ public class ParentParam {
     @ParamColumn(name = "id")
     private List<Long> ids;
 
+    @ParamColumn(name = "father_name")
     private String fatherName;
 
+    @ParamColumn(name = "mother_name")
     private String motherName;
 
     private HttpResponse.PaginationParam pgParam;

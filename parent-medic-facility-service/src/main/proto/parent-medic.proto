@@ -1,0 +1,12 @@
+syntax="proto3";
+
+option java_package = "/src/main/kotlin/service";
+
+message ParentMedicFacility{
+    int64 fk_parent_id = 1;
+    int64 fk_medic_facility_id = 2;
+}
+
+service ParentMedicService{
+    rpc Save(ParentMedicFacility) returns (ParentMedicFacility);
+}
