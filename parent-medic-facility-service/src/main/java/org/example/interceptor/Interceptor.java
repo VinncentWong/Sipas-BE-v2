@@ -1,6 +1,5 @@
 package org.example.interceptor;
 
-import jakarta.persistence.NoResultException;
 import org.example.exception.DataAlreadyExistException;
 import org.example.exception.DataNotFoundException;
 import org.example.exception.ForbiddenException;
@@ -54,17 +53,6 @@ public class Interceptor {
                 .status(HttpStatus.FORBIDDEN)
                 .body(
                         HttpResponse.sendErrorResponse(ex.getMessage(), false)
-                );
-    }
-
-    @ExceptionHandler({
-            NoResultException.class
-    })
-    public ResponseEntity<HttpResponse> handleException(NoResultException ex){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                        HttpResponse.sendErrorResponse(ex.getMessage(), true)
                 );
     }
 }

@@ -10,6 +10,7 @@ import org.example.response.HttpResponse;
 import org.example.response.RepositoryData;
 import org.example.util.QueryUtil;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class CustomParentRepository implements IRepository{
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private ParentRepository repository;
 
     private ParentMapper mapper = Mappers.getMapper(ParentMapper.class);
 
@@ -91,6 +95,7 @@ public class CustomParentRepository implements IRepository{
 
         if(res != null){
             res = mapper.updateParent(parent, res);
+            this.repository.save(res);
         }
 
         log.info("update parent result: {}", res);

@@ -1,11 +1,9 @@
 spring:
-  cloud:
-    config:
-      uri: ${config-server.host}:8000
   application:
     name: parent-medic-facility-service
-  r2dbc:
-    url: r2dbc://localhost:3306/parent-medic-facility
+  cloud:
+    config:
+      uri: http://${config-server.host}:8000
 
 server:
   port: 8004

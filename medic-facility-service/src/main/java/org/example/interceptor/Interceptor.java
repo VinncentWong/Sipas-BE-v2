@@ -28,9 +28,9 @@ public class Interceptor {
     })
     public ResponseEntity<HttpResponse> handleException(DataNotFoundException ex){
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.OK)
                 .body(
-                        HttpResponse.sendErrorResponse(ex.getMessage(), false)
+                        HttpResponse.sendErrorResponse(ex.getMessage(), true)
                 );
     }
 

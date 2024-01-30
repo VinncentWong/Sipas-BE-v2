@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "Dubbo";
+option java_package = "org.example.dubbo";
+
+package parent_medic;
+
+message PgParam{
+    int64 limit = 1;
+    int64 offset = 2;
+    QueryParam param = 3;
+}
+
+message QueryParam{
+    Sort sort = 1;
+}
+
+message Sort{
+    SortPosition sort_position = 1;
+    string column_name = 2;
+}
+
+enum SortPosition{
+    SORT_POSITION_ASC = 0;
+    SORT_POSITION_DESC = 1;
+}
+
+message ParentMedicFacility{
+    int64 id = 1;
+    int64 fk_parent_id = 2;
+    repeated int64 fk_parent_ids = 3;
+    int64 fk_medic_id = 4;
+    repeated int64 fk_medic_ids = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+    google.protobuf.Timestamp deleted_at = 8;
+}
+
+message ListParentMedicFacility{
+    repeated ParentMedicFacility parent_medic_facilities = 1;
+}
+
+message ParentMedicFacilityParam{
+    int64 id = 1;
+    int64 fk_parent_id = 2;
+    repeated int64 fk_parent_ids = 3;
+    int64 fk_medic_id = 4;
+    repeated int64 fk_medic_ids = 5;
+    PgParam pg_param = 6;
+}
+
+message UpdateParameter{
+    ParentMedicFacility data = 1;
+    ParentMedicFacilityParam param = 2;
+}
+
+service ParentMedic{
+    rpc Save(ParentMedicFacility) returns (ParentMedicFacility);
+    rpc Get(ParentMedicFacilityParam) returns (ParentMedicFacility);
+    rpc GetList(ParentMedicFacilityParam) returns (ListParentMedicFacility);
+}

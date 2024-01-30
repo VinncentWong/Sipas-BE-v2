@@ -96,9 +96,25 @@ services:
       - 8003
     networks:
       - sipas_network
+  parent-medic-facility-service:
+    container_name: parent-medic-facility-service
+    build: ./parent-medic-facility-service
+    restart: on-failure
+    depends_on:
+      - redis
+      - mysql
+      - config-server
+    ports:
+      - "8004:8004"
+    environment:
+      - config-server.host=config-server
+    expose:
+      - 8004
+    networks:
+      - sipas_network
 volumes:
   mysql_volume:
     name: mysql_volume
 
 networks:
-  sipas_network:
+  sipas_network21:

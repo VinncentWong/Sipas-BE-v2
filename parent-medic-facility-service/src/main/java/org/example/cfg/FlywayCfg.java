@@ -10,17 +10,18 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties({
         FlywayProperties.class
 })
-public class MysqlCfg {
+public class FlywayCfg {
 
     @Bean(initMethod = "migrate")
-    public Flyway flywayMedicFacility(FlywayProperties props){
-        return Flyway.configure()
+    public Flyway flywayCfgParentMedic(FlywayProperties props){
+        return Flyway
+                .configure()
+                .baselineOnMigrate(true)
                 .dataSource(
                         props.getUrl(),
                         props.getUser(),
                         props.getPassword()
                 )
-                .baselineOnMigrate(true)
                 .load();
     }
 }

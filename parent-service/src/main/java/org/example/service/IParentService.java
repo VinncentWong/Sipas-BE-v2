@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.dto.ParentDto;
+import org.example.dubbo.ParentMedicFacility;
 import org.example.entity.Parent;
 import org.example.entity.ParentParam;
 import org.example.response.HttpResponse;
@@ -16,4 +17,5 @@ public interface IParentService {
     ServiceData<Parent> update(ParentParam param, Parent parent);
     ServiceData<Parent> delete(ParentParam param);
     ServiceData<Parent> activate(ParentParam param);
+    ServiceData<ParentMedicFacility> connect(ParentParam param, String uniqueId);
 }
