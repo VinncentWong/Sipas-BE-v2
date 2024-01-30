@@ -1,6 +1,7 @@
 package org.example.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.example.dto.MedicFacilityDto;
 import org.example.dubbo.DubboMedicFacilityServiceTriple;
 import org.example.dubbo.ListMedicFacility;
@@ -30,6 +31,7 @@ import java.util.List;
 @Service
 @Transactional
 @Slf4j
+@DubboService
 public class MedicFacilityService
         extends DubboMedicFacilityServiceTriple.MedicFacilityServiceImplBase
         implements IMedicFacilityService{
