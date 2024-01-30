@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.example.dto.ParentDto;
+import org.example.dubbo.MedicFacilityParam;
+import org.example.dubbo.MedicFacilityService;
 import org.example.dubbo.ParentMedic;
 import org.example.dubbo.ParentMedicFacility;
 import org.example.entity.Parent;
@@ -37,6 +39,8 @@ public class ParentService implements IParentService {
 
     @DubboReference
     private ParentMedic parentMedicStub;
+
+    private MedicFacilityService medicFacilityStub;
 
     @Autowired
     private IRepository iRepository;
@@ -192,15 +196,41 @@ public class ParentService implements IParentService {
     }
 
     @Override
-    public ServiceData<ParentMedicFacility> connect(ParentParam param, String uniqueId) {
+    public ServiceData<org.example.entity.ParentMedicFacility> connect(ParentParam param, String uniqueCode) {
 
-        this.parentMedicStub
-                .save(
-                        ParentMedicFacility
+        var medicFacility = this.medicFacilityStub
+                .get(
+                        MedicFacilityParam
                                 .newBuilder()
+                                .setUniqueCode(uniqueCode)
                                 .build()
                 );
 
-        return null;
+        if(medicFacility == null){
+            throw new DataNotFoundException("no medic facility found");
+        }
+
+        var parentMedicFacility = this.parentMedicStub
+                .save(
+                        ParentMedicFacility
+                                .newBuilder()
+                                .setFkMedicId(medicFacility.getId())
+                                .setFkParentId(param.getId())
+                                .build()
+                );
+
+        return ServiceData
+                .<org.example.entity.ParentMedicFacility>builder()
+                .data(convertFromPbToEntity(parentMedicFacility))
+                .build();
+    }
+
+    private org.example.entity.ParentMedicFacility convertFromPbToEntity(ParentMedicFacility data){
+        return org.example.entity.ParentMedicFacility
+                .builder()
+                .id(data.getId())
+                .fkParentId(data.getFkParentId())
+                .fkMedicId(data.getFkMedicId())
+                .build();
     }
 }

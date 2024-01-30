@@ -1,12 +1,12 @@
 syntax = "proto3";
 
+package parent_medic;
+
 import "google/protobuf/timestamp.proto";
 
 option java_multiple_files = true;
-option java_outer_classname = "Dubbo";
+option java_outer_classname = "ParentMedicOuter";
 option java_package = "org.example.dubbo";
-
-package parent_medic;
 
 message PgParam{
     int64 limit = 1;
@@ -27,6 +27,15 @@ enum SortPosition{
     SORT_POSITION_ASC = 0;
     SORT_POSITION_DESC = 1;
 }
+
+message Pagination{
+    int64 current_page = 1;
+    int64 current_element = 2;
+    int64 total_page = 3;
+    int64 total_element = 4;
+}
+
+/* Parent Medic */
 
 message ParentMedicFacility{
     int64 id = 1;
@@ -61,4 +70,35 @@ service ParentMedic{
     rpc Save(ParentMedicFacility) returns (ParentMedicFacility);
     rpc Get(ParentMedicFacilityParam) returns (ParentMedicFacility);
     rpc GetList(ParentMedicFacilityParam) returns (ListParentMedicFacility);
+}
+
+/* Medic Facility */
+
+message MedicFacility{
+    int64 id = 1;
+    string email = 2;
+    string username = 3;
+    string unique_code = 4;
+    string telephone_number = 5;
+    string whatsapp_number = 6;
+    string address = 7;
+    bool is_active = 8;
+}
+
+message MedicFacilityParam{
+    int64 id = 1;
+    repeated int64 ids = 2;
+    string email = 3;
+    string unique_code = 4;
+    PgParam pg_param = 5;
+}
+
+message ListMedicFacility{
+    repeated MedicFacility medic_facilities = 1;
+    Pagination pg = 2;
+}
+
+service MedicFacilityService{
+    rpc Get(MedicFacilityParam) returns (MedicFacility);
+    rpc GetList(MedicFacilityParam) returns (ListMedicFacility);
 }
