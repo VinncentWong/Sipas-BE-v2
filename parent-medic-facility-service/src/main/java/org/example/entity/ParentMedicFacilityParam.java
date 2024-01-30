@@ -13,18 +13,21 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
-public class ParentParam {
+public class ParentMedicFacilityParam {
 
     private Long id;
 
-    @ParamColumn(name = "id")
-    private List<Long> ids;
+    @ParamColumn(name = "fk_parent_id")
+    private Long fkParentId;
 
-    @ParamColumn(name = "father_name")
-    private String fatherName;
+    @ParamColumn(name = "fk_parent_id")
+    private List<Long> fkParentIds;
 
-    @ParamColumn(name = "mother_name")
-    private String motherName;
+    @ParamColumn(name = "fk_medic_id")
+    private Long fkMedicId;
+
+    @ParamColumn(name = "fk_medic_id")
+    private List<Long> fkMedicIds;
 
     private HttpResponse.PaginationParam pgParam;
 }

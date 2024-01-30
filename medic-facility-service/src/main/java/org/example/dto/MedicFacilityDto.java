@@ -45,6 +45,7 @@ public class MedicFacilityDto {
                     .telephoneNumber(this.telephoneNumber)
                     .whatsappNumber(this.whatsappNumber)
                     .uniqueCode(RandomStringUtils.randomAlphanumeric(8))
+                    .isActive(true)
                     .build();
         }
     }

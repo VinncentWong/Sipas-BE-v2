@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: parent-medic-facility-service
+  cloud:
+    config:
+      uri: http://${config-server.host}:8000
+
+server:
+  port: 8004

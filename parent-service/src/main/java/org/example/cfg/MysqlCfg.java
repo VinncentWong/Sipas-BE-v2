@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class MysqlCfg {
 
     @Bean(initMethod = "migrate")
-    public Flyway flyway(
+    public Flyway flywayParentCfg(
             FlywayProperties props
     ){
         return Flyway

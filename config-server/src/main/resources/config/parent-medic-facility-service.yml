@@ -1,0 +1,38 @@
+# =============================== SPRING CFG ===========================================
+spring:
+  flyway:
+    url: jdbc:mysql://mysql:3306/parent-medic-facility
+    locations: classpath:/db/migration
+    user: root
+    password: centwong
+  r2dbc:
+    url: r2dbc:mysql://root:centwong@mysql:3306/parent-medic-facility
+    username: root
+    password: centwong
+  jpa:
+    show-sql: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos:8848
+
+# =============================== JWT CFG ===========================================
+jwt:
+  secret: test-centwong-123-456-789-101112-131415-161718-192021_AZXCVBNM<>?
+
+# =============================== ENDPOINT CFG ===========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+dubbo:
+  application:
+    name: dubbo-parent-medic-facility-service
+    qosEnable: true
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://nacos:8848
