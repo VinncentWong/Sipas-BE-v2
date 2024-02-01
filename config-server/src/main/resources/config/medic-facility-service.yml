@@ -26,3 +26,13 @@ management:
     web:
       exposure:
         include: "*"
+
+dubbo:
+  application:
+    name: medic-facility-service
+    qosEnable: true
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://nacos:8848

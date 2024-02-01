@@ -113,4 +113,38 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+<!--                    <excludes>-->
+<!--                        <exclude>-->
+<!--                            <groupId>org.example.cfg</groupId>-->
+<!--                            <artifactId>R2dbcEntityTemplateCfg</artifactId>-->
+<!--                        </exclude>-->
+<!--                        <exclude>-->
+<!--                            <groupId>org.example</groupId>-->
+<!--                            <artifactId>FlywayCfg</artifactId>-->
+<!--                        </exclude>-->
+<!--                    </excludes>-->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>original</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

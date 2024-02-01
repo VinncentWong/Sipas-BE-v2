@@ -117,4 +117,4 @@ volumes:
     name: mysql_volume
 
 networks:
-  sipas_network21:
+  sipas_network:
