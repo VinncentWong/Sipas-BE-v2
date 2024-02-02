@@ -37,6 +37,8 @@ dubbo:
     port: -1
   registry:
     address: nacos://nacos:8848
+  consumer:
+    check: false
 
 management:
   endpoints:

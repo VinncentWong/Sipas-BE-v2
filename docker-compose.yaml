@@ -72,6 +72,8 @@ services:
       - config-server
       - mysql
       - redis
+      - medic-facility-service
+      - parent-medic-facility-service
     environment:
       - config-server.host=config-server
     ports:
