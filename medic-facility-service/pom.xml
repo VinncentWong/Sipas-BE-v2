@@ -141,6 +141,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+					<!-- a hint for IDE's to add the java sources to the classpath -->
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.4.0</version>
+					<executions>
+					<execution>
+						<?m2e execute onConfiguration,onIncremental?>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+						<goal>add-source</goal>
+						</goals>
+						<configuration>
+						<sources>
+							<source>target/generated-sources/swagger/src/main/java</source>
+						</sources>
+						</configuration>
+					</execution>
+					</executions>
+				</plugin>
         </plugins>
     </build>
 </project>
