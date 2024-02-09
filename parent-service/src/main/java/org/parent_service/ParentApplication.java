@@ -7,12 +7,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication(
-        scanBasePackages = {
-                "org.parent_service"
-        }
+//        scanBasePackages = {
+//                "org.parent_service"
+//        }
 )
 @EnableDubbo
-@DubboComponentScan
+//@DubboComponentScan
 // https://www.alibabacloud.com/help/en/edas/developer-reference/implement-service-registration-and-discovery#Task72618
 // tell Spring Cloud Alibaba to register this application into Nacos
 @EnableDiscoveryClient

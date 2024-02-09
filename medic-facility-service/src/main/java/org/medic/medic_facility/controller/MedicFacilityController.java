@@ -1,4 +1,4 @@
-package org.example.medic_facility.controller;
+package org.medic.medic_facility.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -6,6 +6,7 @@ import org.example.constant.ContextConstant;
 import org.medic.medic_facility.dto.MedicFacilityDto;
 import org.medic.medic_facility.service.IMedicFacilityService;
 import org.example.response.HttpResponse;
+import org.medic.medic_facility.service.MedicFacilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +24,7 @@ import java.time.LocalDateTime;
 public class MedicFacilityController {
 
     @Autowired
-    private IMedicFacilityService service;
+    private MedicFacilityService service;
 
     @PostMapping(
             value = "/register",

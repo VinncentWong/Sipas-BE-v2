@@ -29,6 +29,9 @@ public class CustomParentRepository implements IRepository{
 
     @Override
     public RepositoryData<Parent> get(ParentParam param) {
+
+        log.info("sebelum manggil generateQuery");
+
         var query = QueryUtil.generateQuery(
                 em,
                 Parent.class,

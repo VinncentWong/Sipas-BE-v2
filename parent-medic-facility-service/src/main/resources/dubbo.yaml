@@ -1,28 +1,13 @@
-spring:
-  application:
-    name: parent-medic-facility-service
-  cloud:
-    config:
-      uri: http://localhost:8000
-#      uri: http://${config-server.host}:8000
-    loadbalancer.ribbon.enabled: false
-    nacos:
-      discovery:
-        server-addr: localhost:8849
-
-server:
-  port: 8004
-
 dubbo:
   application:
     name: dubbo-parent-medic-facility-service
-    qos-port: 22223
+    qos-enable: false
   protocol:
     name: dubbo
     port: -1
   registry:
     #    address: nacos://nacos:8848?username=nacos&password=nacos&namingPushEmptyProtection=true
-    address: nacos://localhost:8849
+    address: nacos://localhost:8848
     check: false
     parameters:
       register-consumer-url: true

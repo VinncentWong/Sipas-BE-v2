@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +18,8 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-public class MedicFacility {
+@ToString
+public class MedicFacility implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

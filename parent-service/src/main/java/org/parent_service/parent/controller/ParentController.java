@@ -272,4 +272,45 @@ public class ParentController {
                         )
                 );
     }
+
+    @PostMapping(
+            value = "/connect/{unique_code}",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE
+            }
+    )
+    public ResponseEntity<HttpResponse> connect(
+            HttpServletRequest req,
+            @PathVariable("unique_code") String uniqueCode
+    ){
+
+        var initialTime = LocalDateTime.now();
+
+        var id = Long.parseLong(
+                req.getHeader(HttpHeaderConstant.USER_ID)
+        );
+
+        var res = this.service.connect(
+                ParentParam
+                        .builder()
+                        .id(id)
+                        .build(),
+                uniqueCode
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        HttpResponse.sendSuccessResponse(
+                                Context
+                                        .of(ContextConstant.TIME_START, initialTime)
+                                        .put(ContextConstant.REQUEST_PATH, req.getRequestURI()),
+                                HttpStatus.OK,
+                                "success connect parent with facility medic",
+                                res.getData(),
+                                null,
+                                null
+                        )
+                );
+    }
 }

@@ -40,80 +40,80 @@ services:
       - 9848
     networks:
       - sipas_network
-  config-server:
-    container_name: config-server
-    build: ./config-server
-    restart: on-failure
-    ports:
-      - "8000:8000"
-    expose:
-      - 8000
-    networks:
-      - sipas_network
-  gateway:
-    container_name: gateway
-    build: ./gateway
-    restart: on-failure
-    depends_on:
-      - config-server
-    environment:
-      - config-server.host=config-server
-    ports:
-      - "8001:8001"
-    expose:
-      - 8001
-    networks:
-      - sipas_network
-  parent-service:
-    container_name: parent-service
-    build: ./parent-service
-    restart: on-failure
-    depends_on:
-      - config-server
-      - mysql
-      - redis
-      - medic-facility-service
-      - parent-medic-facility-service
-    environment:
-      - config-server.host=config-server
-    ports:
-      - "8002:8002"
-    expose:
-      - 8002
-    networks:
-      - sipas_network
-  medic-facility-service:
-    container_name: medic-facility-service
-    build: ./medic-facility-service
-    restart: on-failure
-    depends_on:
-      - config-server
-      - mysql
-      - redis
-    ports:
-      - "8003:8003"
-    environment:
-      - config-server.host=config-server
-    expose:
-      - 8003
-    networks:
-      - sipas_network
-  parent-medic-facility-service:
-    container_name: parent-medic-facility-service
-    build: ./parent-medic-facility-service
-    restart: on-failure
-    depends_on:
-      - redis
-      - mysql
-      - config-server
-    ports:
-      - "8004:8004"
-    environment:
-      - config-server.host=config-server
-    expose:
-      - 8004
-    networks:
-      - sipas_network
+#  config-server:
+#    container_name: config-server
+#    build: ./config-server
+#    restart: on-failure
+#    ports:
+#      - "8000:8000"
+#    expose:
+#      - 8000
+#    networks:
+#      - sipas_network
+#  gateway:
+#    container_name: gateway
+#    build: ./gateway
+#    restart: on-failure
+#    depends_on:
+#      - config-server
+#    environment:
+#      - config-server.host=config-server
+#    ports:
+#      - "8001:8001"
+#    expose:
+#      - 8001
+#    networks:
+#      - sipas_network
+#  parent-service:
+#    container_name: parent-service
+#    build: ./parent-service
+#    restart: on-failure
+#    depends_on:
+#      - config-server
+#      - mysql
+#      - redis
+#      - medic-facility-service
+#      - parent-medic-facility-service
+#    environment:
+#      - config-server.host=config-server
+#    ports:
+#      - "8002:8002"
+#    expose:
+#      - 8002
+#    networks:
+#      - sipas_network
+#  medic-facility-service:
+#    container_name: medic-facility-service
+#    build: ./medic-facility-service
+#    restart: on-failure
+#    depends_on:
+#      - config-server
+#      - mysql
+#      - redis
+#    ports:
+#      - "8003:8003"
+#    environment:
+#      - config-server.host=config-server
+#    expose:
+#      - 8003
+#    networks:
+#      - sipas_network
+#  parent-medic-facility-service:
+#    container_name: parent-medic-facility-service
+#    build: ./parent-medic-facility-service
+#    restart: on-failure
+#    depends_on:
+#      - redis
+#      - mysql
+#      - config-server
+#    ports:
+#      - "8004:8004"
+#    environment:
+#      - config-server.host=config-server
+#    expose:
+#      - 8004
+#    networks:
+#      - sipas_network
 volumes:
   mysql_volume:
     name: mysql_volume

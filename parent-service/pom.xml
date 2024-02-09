@@ -13,8 +13,8 @@
     <artifactId>parent-service</artifactId>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -72,20 +72,7 @@
             <groupId>org.example</groupId>
             <artifactId>class-utility</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-data-jpa</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.asyncer</groupId>
-                    <artifactId>r2dbc-mysql</artifactId>
-                </exclusion>
-            </exclusions>
+            <classifier>original</classifier>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -130,10 +117,6 @@
             <classifier>original</classifier>
             <exclusions>
                 <exclusion>
-                    <groupId>org.example</groupId>
-                    <artifactId>class-utility</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-data-r2dbc</artifactId>
                 </exclusion>
@@ -143,6 +126,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>logback-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -150,16 +145,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludeGroupIds>
-                        <!-- org.example.MedicFacilityApplication,
-                        org.example.ParentMedicFacilityApplication, -->
-                        <!-- org.example.parent_medic.cfg.R2dbcEntityTemplateCfg, -->
-<!--                        org.springframework.r2dbc,-->
-<!--                        org.springframework.data.r2dbc,-->
-<!--                        io.asyncer-->
-                    </excludeGroupIds>
-                </configuration>
             </plugin>
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->

@@ -3,8 +3,8 @@ package org.parent_service.parent.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.example.dubbo.MedicFacilityService;
-import org.example.dubbo.ParentMedic;
+import org.dubbo.springboot.MedicFacilityService;
+import org.dubbo.springboot.ParentMedic;
 import org.example.enums.Role;
 import org.example.exception.DataAlreadyExistException;
 import org.example.exception.DataNotFoundException;
@@ -36,10 +36,10 @@ public class ParentService implements IParentService {
     @Autowired
     private ParentRepository repository;
 
-    @DubboReference
+    @DubboReference(timeout = 10000)
     private ParentMedic parentMedicStub;
 
-    @DubboReference
+    @DubboReference(timeout = 10000)
     private MedicFacilityService medicFacilityStub;
 
     @Autowired
@@ -198,26 +198,39 @@ public class ParentService implements IParentService {
     @Override
     public ServiceData<ParentMedicFacility> connect(ParentParam param, String uniqueCode) {
 
+        log.info("parentMedicStub: {}", parentMedicStub);
+        log.info("medicStub: {}", medicFacilityStub);
+
+        log.info("catch connect param: {} with unique code = {}", param, uniqueCode);
+
+        var medicFacilityParam = org.dubbo.springboot.MedicFacilityParam
+                .newBuilder()
+                .setUniqueCode(uniqueCode)
+                .build();
+
+        log.info("sending medic facility param: {}", medicFacilityParam);
+
         var medicFacility = this.medicFacilityStub
                 .get(
-                        org.example.dubbo.MedicFacilityParam
-                                .newBuilder()
-                                .setUniqueCode(uniqueCode)
-                                .build()
+                        medicFacilityParam
                 );
 
         if(medicFacility == null){
             throw new DataNotFoundException("no medic facility found");
         }
 
+        log.info("medicFacilityStub Dubbo result: {}", medicFacility);
+
         var parentMedicFacility = this.parentMedicStub
                 .save(
-                        org.example.dubbo.ParentMedicFacility
+                        org.dubbo.springboot.ParentMedicFacility
                                 .newBuilder()
                                 .setFkMedicId(medicFacility.getId())
                                 .setFkParentId(param.getId())
                                 .build()
                 );
+
+        log.info("parentMedicStub Dubbo result: {}", parentMedicFacility);
 
         return ServiceData
                 .<ParentMedicFacility>builder()
@@ -225,7 +238,7 @@ public class ParentService implements IParentService {
                 .build();
     }
 
-    private ParentMedicFacility convertFromPbToEntity(org.example.dubbo.ParentMedicFacility data){
+    private ParentMedicFacility convertFromPbToEntity(org.dubbo.springboot.ParentMedicFacility data){
         return ParentMedicFacility
                 .builder()
                 .id(data.getId())

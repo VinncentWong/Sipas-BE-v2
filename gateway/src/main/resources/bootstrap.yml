@@ -4,7 +4,8 @@ spring:
     name: gateway-server
   cloud:
     config:
-      uri: http://${config-server.host}:8000
+      uri: http://localhost:8000
+#      uri: http://${config-server.host}:8000
     gateway:
       routes:
         - id: "parent-service"

@@ -3,11 +3,10 @@ package org.parent_medic.pm.service;
 import com.google.protobuf.Timestamp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.example.dubbo.*;
+import org.dubbo.springboot.*;
 import org.parent_medic.pm.repository.IRepository;
 import org.example.response.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,7 +15,8 @@ import java.time.ZoneOffset;
 @Service
 @DubboService
 @Slf4j
-public class ParentMedicService extends DubboParentMedicTriple.ParentMedicImplBase {
+public class ParentMedicService
+    extends DubboParentMedicTriple.ParentMedicImplBase {
 
     @Autowired
     private IRepository repository;

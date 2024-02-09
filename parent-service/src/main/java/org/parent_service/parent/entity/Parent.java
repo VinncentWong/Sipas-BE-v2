@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -23,7 +24,7 @@ import java.time.LocalDateTime;
 })
 @DynamicInsert
 @ToString
-public class Parent{
+public class Parent implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,10 +2,10 @@ package org.medic.medic_facility.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.dubbo.springboot.DubboMedicFacilityServiceTriple;
+import org.dubbo.springboot.ListMedicFacility;
+import org.dubbo.springboot.Pagination;
 import org.medic.medic_facility.dto.MedicFacilityDto;
-import org.example.dubbo.DubboMedicFacilityServiceTriple;
-import org.example.dubbo.ListMedicFacility;
-import org.example.dubbo.Pagination;
 import org.medic.medic_facility.entity.MedicFacility;
 import org.medic.medic_facility.entity.MedicFacilityParam;
 import org.medic.medic_facility.repository.IRepository;
@@ -32,8 +32,7 @@ import java.util.List;
 @Slf4j
 @DubboService
 public class MedicFacilityService
-        extends DubboMedicFacilityServiceTriple.MedicFacilityServiceImplBase
-        implements IMedicFacilityService{
+        extends DubboMedicFacilityServiceTriple.MedicFacilityServiceImplBase {
 
     @Autowired
     private MedicFacilityRepository repository;
@@ -48,7 +47,6 @@ public class MedicFacilityService
         this.repository = repository;
     }
 
-    @Override
     public ServiceData<MedicFacility> save(MedicFacilityDto.Create dto) {
 
         log.info("catch create dto: {}", dto);
@@ -78,7 +76,6 @@ public class MedicFacilityService
                 .build();
     }
 
-    @Override
     public ServiceData<MedicFacility> login(MedicFacilityDto.Login dto) {
 
         log.info("catch login dto: {}", dto);
@@ -105,7 +102,6 @@ public class MedicFacilityService
         }
     }
 
-    @Override
     public ServiceData<MedicFacility> get(MedicFacilityParam param) {
         log.info("catch get param: {}", param);
 
@@ -118,7 +114,6 @@ public class MedicFacilityService
                 .build();
     }
 
-    @Override
     public ServiceData<List<MedicFacility>> getList(MedicFacilityParam param) {
         log.info("catch get list param: {}", param);
 
@@ -132,7 +127,6 @@ public class MedicFacilityService
                 .build();
     }
 
-    @Override
     public ServiceData<MedicFacility> update(MedicFacilityParam param, MedicFacility data) {
         log.info("catch update param: {}", param);
         log.info("catch update to be updated: {}", data);
@@ -146,7 +140,6 @@ public class MedicFacilityService
                 .build();
     }
 
-    @Override
     public ServiceData<MedicFacility> delete(MedicFacilityParam param) {
         log.info("catch delete param: {}", param);
 
@@ -163,7 +156,6 @@ public class MedicFacilityService
                 .build();
     }
 
-    @Override
     public ServiceData<MedicFacility> activate(MedicFacilityParam param) {
         log.info("catch activate param: {}", param);
 
@@ -184,21 +176,13 @@ public class MedicFacilityService
     // gRPC with Dubbo implementation here
 
     @Override
-    public org.example.dubbo.MedicFacility get(org.example.dubbo.MedicFacilityParam request) {
-        var reqParam = MedicFacilityParam
-                .builder()
-                .id(request.getId())
-                .ids(request.getIdsList())
-                .email(request.getEmail())
-                .uniqueCode(request.getUniqueCode())
-                .pgParam(
-                        HttpResponse.PaginationParam
-                                .builder()
-                                .offset((int)request.getPgParam().getOffset())
-                                .limit((int)request.getPgParam().getLimit())
-                                .build()
-                )
-                .build();
+    public org.dubbo.springboot.MedicFacility get(org.dubbo.springboot.MedicFacilityParam request) {
+
+        log.info("req get: {}, {}, {}, {}, {}, {}", request.getId(), request.getIdsList(), request.getEmail(), request.getUniqueCode(), request.getPgParam().getLimit(), request.getPgParam().getOffset());
+
+        var reqParam = convertFromPbIntoEntity(request);
+
+        log.info("accept get param: {}", reqParam);
 
         var repoData = this.iRepository
                 .get(reqParam);
@@ -206,14 +190,37 @@ public class MedicFacilityService
         if(repoData != null){
             var data = repoData.getData();
 
+            log.info("returning get data: {}", data);
+
             return convertFromEntityToPb(data);
         }
 
         return null;
     }
 
+//    @Override
+//    public void get(org.dubbo.springboot.MedicFacilityParam request, StreamObserver<org.dubbo.springboot.MedicFacility> responseObserver) {
+//        var reqParam = convertFromPbIntoEntity(request);
+//        log.info("accept get param stream observer: {}", reqParam);
+//
+//        var repoData = this.iRepository
+//                .get(reqParam);
+//
+//        if(repoData != null){
+//            var data = repoData.getData();
+//
+//            log.info("returning get data: {}", data);
+//
+//            var pb =  convertFromEntityToPb(data);
+//
+//            responseObserver.onNext(pb);
+//        }
+//
+//        responseObserver.onNext(null);
+//    }
+
     @Override
-    public ListMedicFacility getList(org.example.dubbo.MedicFacilityParam request) {
+    public ListMedicFacility getList(org.dubbo.springboot.MedicFacilityParam request) {
         var reqParam = MedicFacilityParam
                 .builder()
                 .id(request.getId())
@@ -257,8 +264,8 @@ public class MedicFacilityService
         return null;
     }
 
-    private org.example.dubbo.MedicFacility convertFromEntityToPb(MedicFacility data){
-        return org.example.dubbo.MedicFacility
+    private org.dubbo.springboot.MedicFacility convertFromEntityToPb(MedicFacility data){
+        return org.dubbo.springboot.MedicFacility
                 .newBuilder()
                 .setId(data.getId())
                 .setEmail(data.getEmail())
@@ -267,5 +274,37 @@ public class MedicFacilityService
                 .setTelephoneNumber(data.getTelephoneNumber())
                 .setWhatsappNumber(data.getWhatsappNumber())
                 .build();
+    }
+
+    private MedicFacilityParam convertFromPbIntoEntity(org.dubbo.springboot.MedicFacilityParam param){
+        var builder = MedicFacilityParam.builder();
+
+        if(param.getId() != 0){
+            builder.id(param.getId());
+        }
+
+        if(!param.getEmail().isEmpty()){
+            builder.email(param.getEmail());
+        }
+
+        if(!param.getIdsList().isEmpty()){
+            builder.ids(param.getIdsList());
+        }
+
+        if(!param.getUniqueCode().isEmpty()){
+            builder.uniqueCode(param.getUniqueCode());
+        }
+
+        if(param.hasPgParam()){
+            var pgBuilder = HttpResponse.PaginationParam
+                    .builder();
+            if(param.getPgParam().getLimit() == 0){
+                pgBuilder.limit(10);
+            }
+            pgBuilder.offset((int)param.getPgParam().getOffset());
+            builder.pgParam(pgBuilder.build());
+        }
+
+        return builder.build();
     }
 }

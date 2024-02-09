@@ -1,0 +1,2 @@
+com.google.protobuf.GeneratedMessageLite
+org.example.exception.QueryException

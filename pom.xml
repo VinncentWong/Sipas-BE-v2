@@ -152,7 +152,7 @@
 			<dependency>
 				<groupId>org.apache.dubbo</groupId>
 				<artifactId>dubbo</artifactId>
-				<version>3.2.10</version>
+				<version>3.2.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.alibaba.cloud</groupId>
@@ -213,6 +213,21 @@
 				<groupId>com.datastax.oss</groupId>
 				<artifactId>java-driver-core</artifactId>
 				<version>4.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.4.14</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba.nacos</groupId>
+				<artifactId>logback-adapter</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp</artifactId>
+				<version>4.10.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

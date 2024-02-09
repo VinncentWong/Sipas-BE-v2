@@ -2,9 +2,9 @@ syntax = "proto3";
 
 option java_multiple_files = true;
 option java_outer_classname = "Dubbo";
-option java_package = "org.example.dubbo";
+//option java_package = "org.example.dubbo";
 
-package medic_facility;
+package org.dubbo.springboot;
 
 message PgParam{
     int64 limit = 1;

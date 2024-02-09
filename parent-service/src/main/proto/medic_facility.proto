@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "parent.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "Dubbo";
+
+package org.dubbo.springboot;
+
+/* Medic Facility */
+
+message MedicFacility{
+    int64 id = 1;
+    string email = 2;
+    string username = 3;
+    string unique_code = 4;
+    string telephone_number = 5;
+    string whatsapp_number = 6;
+    string address = 7;
+    bool is_active = 8;
+}
+
+message MedicFacilityParam{
+    int64 id = 1;
+    repeated int64 ids = 2;
+    string email = 3;
+    string unique_code = 4;
+    PgParam pg_param = 5;
+}
+
+message ListMedicFacility{
+    repeated MedicFacility medic_facilities = 1;
+    Pagination pg = 2;
+}
+
+service MedicFacilityService{
+    rpc Get(MedicFacilityParam) returns (MedicFacility);
+    rpc GetList(MedicFacilityParam) returns (ListMedicFacility);
+}

@@ -17,6 +17,7 @@ public class InterceptorParent {
             RuntimeException.class,
     })
     public ResponseEntity<HttpResponse> handleException(RuntimeException ex){
+        ex.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(

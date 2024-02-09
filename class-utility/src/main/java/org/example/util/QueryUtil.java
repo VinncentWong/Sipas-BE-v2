@@ -19,6 +19,7 @@ import org.springframework.data.relational.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 public class QueryUtil {
@@ -115,7 +116,11 @@ public class QueryUtil {
 
                     columnName = field.getAnnotation(ParamColumn.class).name();
 
-                    var list = (ArrayList) value;
+                    List list = null;
+
+                    if(List.class.isAssignableFrom(type)){
+                        list = (List) field.get(param);
+                    }
 
                     // it means the type is instance of Collection
                     if(value != null){
@@ -253,7 +258,7 @@ public class QueryUtil {
 
                     columnName = field.getAnnotation(ParamColumn.class).name();
 
-                    var list = (ArrayList) value;
+                    var list = (List) value;
 
                     // it means the type is instance of Iterable
                     if(field.get(param) != null){

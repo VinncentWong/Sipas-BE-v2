@@ -1,12 +1,14 @@
 # =============================== SPRING CFG ===========================================
 spring:
   flyway:
-    url: jdbc:mysql://mysql:3306/parent-medic-facility
+#    url: jdbc:mysql://mysql:3306/parent-medic-facility
+    url: jdbc:mysql://localhost:3306/parent-medic-facility
     locations: classpath:/db/migration
     user: root
     password: centwong
   r2dbc:
-    url: r2dbc:mysql://root:centwong@mysql:3306/parent-medic-facility
+#    url: r2dbc:mysql://root:centwong@mysql:3306/parent-medic-facility
+    url: r2dbc:mysql://root:centwong@localhost:3306/parent-medic-facility
     username: root
     password: centwong
   jpa:
@@ -14,7 +16,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: nacos:8848
+#        server-addr: nacos:8848
+        server-addr: localhost:8849
+        namingPushEmptyProtection: true
 
 # =============================== JWT CFG ===========================================
 jwt:
@@ -26,15 +30,3 @@ management:
     web:
       exposure:
         include: "*"
-
-dubbo:
-  application:
-    name: dubbo-parent-medic-facility-service
-    qosEnable: true
-  protocol:
-    name: dubbo
-    port: -1
-  registry:
-    address: nacos://nacos:8848
-  consumer:
-    check: false

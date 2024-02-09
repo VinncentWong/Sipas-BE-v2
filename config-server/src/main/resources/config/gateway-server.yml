@@ -6,7 +6,8 @@ spring:
     loadbalancer.ribbon.enabled: false
     nacos:
       discovery:
-        server-addr: nacos:8848
+        server-addr: localhost:8849
+#        server-addr: nacos:8848
     gateway:
       discovery.locator:
         enabled: true
