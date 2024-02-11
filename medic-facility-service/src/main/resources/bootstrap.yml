@@ -16,7 +16,7 @@ dubbo:
   application:
     name: medic-facility-service
   protocol:
-    name: dubbo
+    name: tri
     port: -1
   registry:
     #    address: nacos://nacos:8848?username=nacos&password=nacos&namingPushEmptyProtection=true

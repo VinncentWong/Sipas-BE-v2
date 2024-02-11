@@ -24,7 +24,7 @@ dubbo:
     name: dubbo-parent-service
     qos-port: 22224
   protocol:
-    name: dubbo
+    name: tri
     port: -1
   registry:
     address: nacos://localhost:8849

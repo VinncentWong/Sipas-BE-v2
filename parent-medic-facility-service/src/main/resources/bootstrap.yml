@@ -18,7 +18,7 @@ dubbo:
     name: dubbo-parent-medic-facility-service
     qos-port: 22223
   protocol:
-    name: dubbo
+    name: tri
     port: -1
   registry:
     #    address: nacos://nacos:8848?username=nacos&password=nacos&namingPushEmptyProtection=true
